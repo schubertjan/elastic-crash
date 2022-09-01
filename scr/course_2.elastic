@@ -1,0 +1,90 @@
+GET news_headlines/_search
+
+# get exact number of hits
+GET news_headlines/_search
+{
+  "track_total_hits": true
+}
+
+# there are two ways to search. with a query and with aggregation
+
+# select results in a specific range
+GET news_headlines/_search
+{
+  "query": {
+    "range": {
+      "date": {
+        "gte": "2015-06-20",
+        "lte": "2015-09-22"
+      }
+    }
+  }
+}
+
+# aggregation
+GET news_headlines/_search
+{
+  "aggs": {
+    "by_category": {
+      "terms": {
+        "field": "category",
+        "size": 100
+      }
+    }
+  }
+}
+
+# use both. Find sig topics in entertainment
+GET news_headlines/_search
+{
+  "query": {
+    "match": {
+      "category": "ENTERTAINMENT"
+    }
+  },
+  "aggs": {
+    "popular_in_entertainment": {
+      "significant_text": {
+        "field": "headline"
+      }
+    }
+  }
+}
+
+# Find all articles that have Trump or Obama or Clinton in the headline
+GET news_headlines/_search
+{
+  "query": {
+    "match": {
+      "headline": {"query": "Obama Trump Clinton"}
+    }
+  }
+}
+
+# Find all articles that have Trump and Obama and Clinton in the headline
+GET news_headlines/_search
+{
+  "query": {
+    "match": {
+      "headline": {
+        "query": "Obama Trump Clinton",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+
+GET news_headlines/_search
+{
+  "query": {
+    "match": {
+      "headline": {
+        "query": "Obama Trump Clinton",
+        "minimum_should_match": 2
+      }
+    }
+  }
+}
+
+DELETE news_headlines

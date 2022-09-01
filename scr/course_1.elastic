@@ -1,0 +1,60 @@
+GET _cluster/health
+
+GET _cluster/stats
+
+# add index to crud
+PUT favorite_candy
+
+# add document to an index 
+POST favorite_candy/_doc
+{
+  "first_name": "Jan",
+  "candy": "piknik"
+}
+
+# add document with an id
+POST favorite_candy/_doc/1
+{
+  "first_name": "Johan",
+  "candy": "cokolada"
+}
+
+POST favorite_candy/_doc/2
+{
+  "first_name": "Lucie",
+  "candy": "nevim"
+}
+
+POST favorite_candy/_doc/3
+{
+  "first_name": "Ivan",
+  "candy": "to rakouske"
+}
+
+# read data
+GET favorite_candy/_doc/1
+
+# add a different version of id
+POST favorite_candy/_doc/1
+{
+  "first_name": "Karel",
+  "candy": "slavia"
+}
+
+# to never overwrite we use _create endpoint
+PUT favorite_candy/_create/1
+{
+  "first_name": "Pffefa",
+  "candy": "sparta"
+}
+
+# update
+POST favorite_candy/_update/1
+{
+  "doc": {
+    "candy": "plzen"
+  }
+}
+
+# delete
+DELETE favorite_candy/_doc/1

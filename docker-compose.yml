@@ -30,6 +30,7 @@ services:
       - elasticnet
     depends_on:
       - elasticsearch
+
 volumes:
   logvolume01: {}
 

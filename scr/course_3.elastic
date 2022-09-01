@@ -1,0 +1,195 @@
+# https://www.youtube.com/watch?v=2KgJ6TQPIIA
+
+GET news_headlines/_search
+
+GET news_headlines/_search
+{
+  "aggs": {
+    "by_category": {
+      "terms": {
+        "field": "category",
+        "size": 100
+      }
+    }
+  }
+}
+
+
+GET news_headlines/_search
+{
+  "query": {
+    "match": {
+      "headline": {
+        "query": "shape of you"
+      }
+    }
+  }
+}
+
+# all terms must appear in this order
+GET news_headlines/_search
+{
+  "query": {
+    "match_phrase": {
+      "headline": {
+        "query": "shape of you"
+      }
+    }
+  }
+}
+
+# allows to search term in multiple fields
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": ["authors", "headline", "short_description"]
+    }
+  }
+}
+
+# allows to add more weight to certain fields
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Michelle Obama",
+      "fields": ["authors", "headline^2", "short_description"]
+    }
+  }
+}
+
+# works as a match
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "party planning",
+      "fields": ["headline^2", "short_description"]
+    }
+  }
+}
+
+# works as a match_phrase
+GET news_headlines/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "party planning",
+      "fields": ["headline^2", "short_description"],
+      "type": "phrase"
+    }
+  }
+}
+
+
+GET news_headlines/_search
+{
+  "query": {
+    "match_phrase": {
+      "headline": "Michelle Obama"
+    }
+  },
+  "aggs": {
+    "category_count": {
+      "terms": {
+        "field": "category",
+        "size": 100
+      }
+    }
+  }
+}
+
+# must match Michelle Obama in headlines and match "POLITICS" in category field
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        },
+        {
+          "match": {
+            "category": "POLITICS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "category": "WEDDINGS"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# doesnt need to meet should criteria but if they do they get a higher score so will show higher
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        }
+      ],
+      "should": [
+        {
+          "match_phrase": {
+            "category": "BLACK VOICES"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# filter places results in yes/no category. Only ys is shows in the results
+GET news_headlines/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "headline": "Michelle Obama"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "date": {
+              "gte": "2014-03-25",
+              "lte": "2016-03-25"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
